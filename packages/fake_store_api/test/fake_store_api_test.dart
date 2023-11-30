@@ -7,30 +7,36 @@ import 'package:test/test.dart';
 import 'fake_store_api_test.mocks.dart';
 import 'mock_cart.dart';
 import 'mock_product.dart';
+import 'mock_token.dart';
 import 'mock_user.dart';
 
 @GenerateMocks([Dio])
 void main() {
   late MockDio mockDio;
-  late FakeStoreApiClient client;
   late String url;
+  late FakeStoreApiClient client;
+
+  setUp(() {
+    mockDio = MockDio();
+    url = 'https://test.fakestoreapi.com';
+    client = FakeStoreApiClient(dio: mockDio, baseUrl: url);
+  });
+
+  group('constructor', () {
+    test('does not require an mockDio', () {
+      expect(FakeStoreApiClient(), isNotNull);
+    });
+  });
 
   group('Fake Store API client', () {
-    setUp(() {
-      mockDio = MockDio();
-      client = FakeStoreApiClient();
-      url = 'https://fakestoreapi.com';
-    });
-
-    test('fetching Users', () async {
+    test('fetching Users success', () async {
       final response = Future.value(Response(
         statusCode: 200,
         data: mockUser,
         requestOptions: RequestOptions(path: '$url/users'),
       ));
 
-      when(mockDio.get('$url/users', data: mockUser))
-          .thenAnswer((_) async => await response);
+      when(mockDio.get('$url/users')).thenAnswer((_) async => response);
 
       final result = await client.fetchUser();
 
@@ -44,14 +50,73 @@ void main() {
           mockUser.map((u) => u['password']).toList());
     });
 
-    test('fetching Products', () async {
+    test('fetching Users failed', () async {
+      final response = Future.value(Response(
+        statusCode: 403,
+        requestOptions: RequestOptions(path: '$url/users'),
+      ));
+
+      when(mockDio.get('$url/users')).thenAnswer((_) async => response);
+
+      final result = await client.fetchUser();
+
+      expect(result, []);
+    });
+
+    test('post User success', () async {
+      final response = Future.value(Response(
+        statusCode: 200,
+        data: mockToken,
+        requestOptions: RequestOptions(path: '$url/auth/login'),
+      ));
+
+      when(mockDio.post(
+        '$url/auth/login',
+        data: {
+          'username': mockUser[0]['username'],
+          'password': mockUser[0]['password'],
+        },
+      )).thenAnswer((_) async => response);
+
+      final result = await client.postUser(
+        mockUser[0]['username'],
+        mockUser[0]['password'],
+      );
+
+      expect(result, mockToken);
+    });
+
+    test('post User failed', () async {
+      final response = Future.value(Response(
+        statusCode: 400,
+        data: mockToken,
+        requestOptions: RequestOptions(path: '$url/auth/login'),
+      ));
+
+      when(mockDio.post(
+        '$url/auth/login',
+        data: {
+          'username': mockUser[0]['username'],
+          'password': mockUser[0]['password'],
+        },
+      )).thenAnswer((_) async => response);
+
+      final result = await client.postUser(
+        mockUser[0]['username'],
+        mockUser[0]['password'],
+      );
+
+      expect(result, '');
+    });
+
+    test('fetching Products success', () async {
       final response = Future.value(Response(
         statusCode: 200,
         data: mockProduct,
         requestOptions: RequestOptions(path: '$url/products'),
       ));
 
-      when(mockDio.get('$url/products', data: mockProduct))
+      when(mockDio.get('$url/products'))
           .thenAnswer((_) async => await response);
 
       final result = await client.fetchProduct();
@@ -89,15 +154,27 @@ void main() {
               .toList());
     });
 
-    test('fetching Carts', () async {
+    test('fetching Products failed', () async {
+      final response = Future.value(Response(
+        statusCode: 403,
+        requestOptions: RequestOptions(path: '$url/products'),
+      ));
+
+      when(mockDio.get('$url/products')).thenAnswer((_) async => response);
+
+      final result = await client.fetchProduct();
+
+      expect(result, []);
+    });
+
+    test('fetching Carts success', () async {
       final response = Future.value(Response(
         statusCode: 200,
         data: mockCart,
         requestOptions: RequestOptions(path: '$url/carts'),
       ));
 
-      when(mockDio.get('$url/carts', data: mockCart))
-          .thenAnswer((_) async => await response);
+      when(mockDio.get('$url/carts')).thenAnswer((_) async => await response);
 
       final result = await client.fetchCart();
 
@@ -129,6 +206,19 @@ void main() {
                   .map((cp) => CartProducts.fromJson(cp).quantity)
                   .toList())
               .toList());
+    });
+
+    test('fetching Carts failed', () async {
+      final response = Future.value(Response(
+        statusCode: 403,
+        requestOptions: RequestOptions(path: '$url/carts'),
+      ));
+
+      when(mockDio.get('$url/carts')).thenAnswer((_) async => response);
+
+      final result = await client.fetchCart();
+
+      expect(result, []);
     });
   });
 }

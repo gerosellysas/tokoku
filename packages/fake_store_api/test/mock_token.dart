@@ -1,0 +1,2 @@
+const mockToken =
+    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjIsInVzZXIiOiJtb3JfMjMxNCIsImlhdCI6MTcwMTM1NjkwMn0.BVOaMTXf7lBQGdfvrCBAiCR5t8NBGIfxrtGy4oz8ZPg';

@@ -1,7 +1,7 @@
 import 'package:fake_store_api/fake_store_api.dart';
 import 'package:test/test.dart';
 
-import 'mock_cart.dart';
+import '../mock_cart.dart';
 
 void main() {
   group('Cart', () {

@@ -1,7 +1,7 @@
 import 'package:fake_store_api/fake_store_api.dart';
 import 'package:test/test.dart';
 
-import 'mock_product.dart';
+import '../mock_product.dart';
 
 void main() {
   group('Product', () {

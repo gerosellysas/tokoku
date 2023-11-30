@@ -1,7 +1,7 @@
 name: fake_store_api
 description: "Fake Store API package"
 version: 0.0.1
-homepage:
+publish_to: 'none'
 
 environment:
   sdk: '>=3.2.1 <4.0.0'

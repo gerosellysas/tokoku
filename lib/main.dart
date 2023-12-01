@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:tokoku/navigation/app_route.dart';
 import 'package:tokoku/res/resources.dart';
 import 'package:tokoku/screens/cart/cart.dart';
-import 'package:tokoku/screens/detail/view/detail_screen.dart';
-import 'package:tokoku/screens/home/view/home_screen.dart';
-import 'package:tokoku/screens/search/search.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -17,7 +15,8 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return MaterialApp.router(
+      routerConfig: AppRouter.router,
       builder: (context, child) {
         return MediaQuery(
           data: MediaQuery.of(context)
@@ -27,7 +26,6 @@ class MyApp extends StatelessWidget {
       },
       title: 'Tokoku',
       theme: AppThemes.themeData,
-      home: const CartScreen(),
     );
   }
 }

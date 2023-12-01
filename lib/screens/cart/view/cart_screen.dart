@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:tokoku/res/resources.dart';
 import 'package:tokoku/screens/cart/view/cart_button.dart';
 import 'package:tokoku/screens/cart/view/cart_card.dart';

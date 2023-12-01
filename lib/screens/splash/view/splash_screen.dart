@@ -15,10 +15,6 @@ class SplashScreen extends StatelessWidget {
             AppImages.logo,
             height: AppSize.responsive(178),
             width: AppSize.responsive(108),
-            // colorFilter: ColorFilter.mode(
-            //   AppColors.barBg.withOpacity(0.48),
-            //   BlendMode.srcIn,
-            // ),
           ),
         ),
       ),

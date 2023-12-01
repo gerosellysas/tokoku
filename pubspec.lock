@@ -81,7 +81,7 @@ packages:
     source: hosted
     version: "5.4.0"
   equatable:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: equatable
       sha256: c2b87cb7756efdf69892005af546c56c0b5037f54d2a88269b4f347a505e3ca2
@@ -150,6 +150,14 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
+  formz:
+    dependency: "direct main"
+    description:
+      name: formz
+      sha256: df8301299601139de7e653e68a07c332fd2db7cec65745eca1a1ea73fb711e06
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.6.1"
   go_router:
     dependency: "direct main"
     description:

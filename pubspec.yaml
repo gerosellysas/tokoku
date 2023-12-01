@@ -9,10 +9,12 @@ environment:
 dependencies:
   auth_repo:
     path: packages/auth_repo
+  equatable: ^2.0.5
   flutter:
     sdk: flutter
   flutter_bloc: ^8.1.3
   flutter_svg: ^2.0.9
+  formz: ^0.6.1
   go_router: ^12.1.1
   google_fonts: ^6.1.0
 

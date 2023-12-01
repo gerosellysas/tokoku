@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:tokoku/res/resources.dart';
-import 'package:tokoku/screens/home/view/home_view.dart';
+import 'package:tokoku/screens/cart/cart.dart';
+import 'package:tokoku/screens/detail/view/detail_screen.dart';
+import 'package:tokoku/screens/home/view/home_screen.dart';
+import 'package:tokoku/screens/search/search.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -24,7 +27,7 @@ class MyApp extends StatelessWidget {
       },
       title: 'Tokoku',
       theme: AppThemes.themeData,
-      home: const HomeScreen(),
+      home: const CartScreen(),
     );
   }
 }

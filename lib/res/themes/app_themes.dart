@@ -15,19 +15,19 @@ class AppThemes {
     inputDecorationTheme: InputDecorationTheme(
       enabledBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(8),
-        borderSide: const BorderSide(color: AppColors.grey, width: 1.5),
+        borderSide: const BorderSide(color: AppColors.darkGrey, width: 1.5),
       ),
       border: OutlineInputBorder(
         borderRadius: BorderRadius.circular(8),
-        borderSide: const BorderSide(color: AppColors.grey, width: 1.5),
+        borderSide: const BorderSide(color: AppColors.darkGrey, width: 1.5),
       ),
       focusedBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(8),
         borderSide: const BorderSide(color: AppColors.black, width: 1.5),
       ),
       alignLabelWithHint: true,
-      hintStyle: AppFonts.italic(AppColors.grey),
-      labelStyle: AppFonts.italic(AppColors.grey),
+      hintStyle: AppFonts.italic(AppColors.darkGrey),
+      labelStyle: AppFonts.italic(AppColors.darkGrey),
       floatingLabelStyle: AppFonts.italic(AppColors.black),
       contentPadding: EdgeInsets.symmetric(
         vertical: AppSize.responsive(12),

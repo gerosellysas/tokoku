@@ -19,17 +19,17 @@ class AppIconButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return Material(
       color: Colors.transparent,
-      shape: const RoundedRectangleBorder(),
+      type: MaterialType.circle,
       child: InkWell(
         onTap: onPressed,
-        borderRadius: BorderRadius.circular(AppSize.responsive(24)),
-        highlightColor: AppColors.primary.withOpacity(0.32),
-        splashColor: AppColors.primary.withOpacity(0.32),
+        borderRadius: BorderRadius.circular(AppSize.responsive(48)),
+        highlightColor: AppColors.primary.withOpacity(0.12),
+        splashColor: AppColors.primary.withOpacity(0.12),
         child: Container(
           height: AppSize.responsive(48),
           width: AppSize.responsive(48),
-          decoration: BoxDecoration(
-            color: color ?? Colors.transparent,
+          decoration: const BoxDecoration(
+            color: Colors.transparent,
             shape: BoxShape.circle,
           ),
           child: Center(
@@ -37,6 +37,9 @@ class AppIconButton extends StatelessWidget {
               icon!,
               height: AppSize.responsive(24),
               width: AppSize.responsive(24),
+              colorFilter: color != null
+                  ? ColorFilter.mode(color!, BlendMode.srcIn)
+                  : null,
             ),
           ),
         ),

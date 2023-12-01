@@ -2,6 +2,10 @@ import 'package:auth_repo/auth_repo.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:shop_repo/shop_repo.dart';
+import 'package:tokoku/bloc/catalog/catalog.bloc.dart';
+import 'package:tokoku/cubit/detail_cubit/detail_cubit.dart';
+import 'package:tokoku/cubit/detail_cubit/detail_state.dart';
 import 'package:tokoku/navigation/app_route.dart';
 import 'package:tokoku/res/themes/themes.dart';
 import 'package:tokoku/screens/home/home.dart';
@@ -19,10 +23,12 @@ class App extends StatefulWidget {
 
 class _AppState extends State<App> {
   late final AuthRepo _authRepo;
+  late final ShopRepo _shopRepo;
 
   @override
   void initState() {
     _authRepo = AuthRepo();
+    _shopRepo = ShopRepo();
     super.initState();
   }
 
@@ -36,8 +42,16 @@ class _AppState extends State<App> {
   Widget build(BuildContext context) {
     return RepositoryProvider.value(
       value: _authRepo,
-      child: BlocProvider(
-        create: (_) => AuthBloc(authRepo: _authRepo),
+      child: MultiBlocProvider(
+        providers: [
+          BlocProvider(create: (_) => AuthBloc(authRepo: _authRepo)),
+          BlocProvider(
+            create: (_) => CatalogBloc(
+              shopRepo: _shopRepo,
+            )..add(CatalogStarted()),
+          ),
+          BlocProvider(create: (_) => DetailCubit(DetailCubitState()))
+        ],
         child: const AppView(),
       ),
     );

@@ -1,10 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:tokoku/bloc/catalog/catalog.bloc.dart';
+import 'package:tokoku/cubit/detail_cubit/detail_cubit.dart';
+import 'package:tokoku/cubit/detail_cubit/detail_state.dart';
 import 'package:tokoku/res/resources.dart';
 import 'package:tokoku/screens/detail/view/detail_button.dart';
 import 'package:tokoku/screens/detail/view/detail_product.dart';
 
 class DetailScreen extends StatelessWidget {
-  const DetailScreen({super.key});
+  final int? productIndex;
+  const DetailScreen({super.key, this.productIndex});
 
   @override
   Widget build(BuildContext context) {
@@ -39,7 +44,23 @@ class DetailScreen extends StatelessWidget {
       body: Stack(
         alignment: Alignment.bottomCenter,
         children: [
-          const DetailProduct(),
+          BlocSelector<CatalogBloc, CatalogState, CatalogLoaded>(
+            selector: (state) {
+              return state as CatalogLoaded;
+            },
+            builder: (context, state) {
+              return BlocBuilder<DetailCubit, DetailCubitState>(
+                builder: (context, cubit) {
+                  return DetailProduct(
+                    product: state.catalog[productIndex!],
+                    favorite: cubit.favorite,
+                    onFavoriteTap: () =>
+                        context.read<DetailCubit>().onFavoriteTapped(),
+                  );
+                },
+              );
+            },
+          ),
           DetailButton(onTap: () {}),
         ],
       ),

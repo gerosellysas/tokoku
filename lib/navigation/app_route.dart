@@ -45,6 +45,13 @@ class AppRouter {
               return const HomeScreen();
             },
           ),
+          GoRoute(
+            path: 'detail',
+            builder: (BuildContext context, GoRouterState state) {
+              int productIndex = state.extra as int;
+              return DetailScreen(productIndex: productIndex);
+            },
+          ),
         ],
       ),
     ],

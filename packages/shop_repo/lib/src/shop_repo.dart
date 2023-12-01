@@ -1,12 +1,29 @@
-import 'package:fake_store_api/fake_store_api.dart';
+import 'package:fake_store_api/fake_store_api.dart' as c;
+import 'package:shop_repo/shop_repo.dart';
 
 class ShopRepo {
-  final FakeStoreApiClient _shopApiClient;
+  final c.FakeStoreApiClient _shopApiClient;
 
-  ShopRepo({FakeStoreApiClient? shopApiClient})
-      : _shopApiClient = shopApiClient ?? FakeStoreApiClient();
+  ShopRepo({c.FakeStoreApiClient? shopApiClient})
+      : _shopApiClient = shopApiClient ?? c.FakeStoreApiClient();
 
   Future<List<Product>> loadProduct() async {
-    return await _shopApiClient.fetchProduct();
+    final products = await _shopApiClient.fetchProduct();
+    var result = <Product>[];
+    for (var p in products) {
+      result.add(Product(
+        id: p.id,
+        image: p.image,
+        title: p.title,
+        price: p.price,
+        description: p.description,
+        category: p.category,
+        rating: Rating(
+          rate: p.rating!.rate,
+          count: p.rating!.count,
+        ),
+      ));
+    }
+    return result;
   }
 }

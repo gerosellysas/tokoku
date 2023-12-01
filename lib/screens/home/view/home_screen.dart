@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:go_router/go_router.dart';
+import 'package:tokoku/bloc/catalog/catalog.bloc.dart';
 import 'package:tokoku/res/resources.dart';
 import 'package:tokoku/screens/home/view/home_filter_category.dart';
 import 'package:tokoku/screens/home/view/home_search.dart';
@@ -58,16 +61,32 @@ class HomeScreen extends StatelessWidget {
             onTap: () {},
           ),
           SizedBox(height: AppSize.responsive(24)),
-          ProductList(
-            itemCount: 20,
-            emptyList: 'Errror while loading products',
-            itemBuilder: (context, i) => const ProductCard(
-// image: [i],
-// name: [i],
-// price: [i],
-// rating: [i],
-// review: [i],
-                ),
+          BlocBuilder<CatalogBloc, CatalogState>(
+            builder: (context, state) {
+              return switch (state) {
+                CatalogLoading() => const Expanded(
+                    child: Center(
+                      child: CircularProgressIndicator(),
+                    ),
+                  ),
+                CatalogError() => Expanded(
+                    child: Center(
+                      child: Text(
+                        'Errror while loading products',
+                        style: AppFonts.italic(AppColors.darkGrey),
+                      ),
+                    ),
+                  ),
+                CatalogLoaded() => ProductList(
+                    itemCount: state.catalog.length,
+                    emptyList: 'Errror while loading products',
+                    itemBuilder: (context, i) => ProductCard(
+                      product: state.catalog[i],
+                      onTap: () => context.push('/detail', extra: i),
+                    ),
+                  ),
+              };
+            },
           ),
         ],
       ),

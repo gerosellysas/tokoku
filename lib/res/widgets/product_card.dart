@@ -1,22 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:shop_repo/shop_repo.dart';
 import 'package:tokoku/res/resources.dart';
 
 class ProductCard extends StatelessWidget {
-  final String? image;
-  final String? name;
-  final String? price;
-  final String? rating;
-  final String? review;
+  final Product? product;
+  final void Function()? onTap;
 
-  const ProductCard({
-    super.key,
-    this.image,
-    this.name,
-    this.price,
-    this.rating,
-    this.review,
-  });
+  const ProductCard({super.key, this.product, this.onTap});
 
   @override
   Widget build(BuildContext context) {
@@ -37,16 +28,21 @@ class ProductCard extends StatelessWidget {
               children: [
                 Container(
                   height: AppSize.responsive(200),
+                  margin: EdgeInsets.only(
+                    left: AppSize.responsive(12),
+                    top: AppSize.responsive(12),
+                    right: AppSize.responsive(12),
+                  ),
                   width: double.maxFinite,
-                  decoration: image != null
+                  decoration: product!.image != null
                       ? BoxDecoration(
                           image: DecorationImage(
-                            image: NetworkImage(image!),
+                            image: NetworkImage(product!.image!),
                           ),
                         )
                       : null,
                   child: Visibility(
-                    visible: image == null,
+                    visible: product!.image == null,
                     child: Center(
                       child: Text(
                         'Image error',
@@ -56,21 +52,23 @@ class ProductCard extends StatelessWidget {
                   ),
                 ),
                 Container(
-                  height: AppSize.responsive(150),
+                  height: AppSize.responsive(140),
                   width: double.maxFinite,
                   padding: EdgeInsets.all(AppSize.responsive(12)),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        name ?? '-',
+                        product!.title ?? '-',
                         overflow: TextOverflow.ellipsis,
-                        maxLines: 3,
+                        maxLines: 2,
                         style: AppFonts.reg(size: 12),
                       ),
                       SizedBox(height: AppSize.responsive(4)),
                       Text(
-                        price != null ? 'Price $price' : '-',
+                        product!.price != null
+                            ? 'Price ${product!.price}'
+                            : '-',
                         style: AppFonts.semibold(
                           color: AppColors.black,
                           size: 14,
@@ -78,8 +76,10 @@ class ProductCard extends StatelessWidget {
                       ),
                       const Expanded(child: SizedBox()),
                       Visibility(
-                        visible: rating != null && review != null,
+                        visible: product!.rating!.rate != null &&
+                            product!.rating!.count != null,
                         child: Row(
+                          // crossAxisAlignment: CrossAxisAlignment.end,
                           children: [
                             SvgPicture.asset(
                               AppImages.rate,
@@ -88,20 +88,17 @@ class ProductCard extends StatelessWidget {
                             ),
                             SizedBox(width: AppSize.responsive(4)),
                             Text(
-                              rating ?? '-',
+                              '${product!.rating!.rate}',
                               style: AppFonts.reg(),
                             ),
-                            SizedBox(width: AppSize.responsive(8)),
+                            SizedBox(width: AppSize.responsive(4)),
                             Text(
-                              '||',
-                              style: AppFonts.reg(
-                                color: AppColors.black,
-                                size: 16,
-                              ),
+                              '|',
+                              style: AppFonts.reg(),
                             ),
-                            SizedBox(width: AppSize.responsive(8)),
+                            SizedBox(width: AppSize.responsive(4)),
                             Text(
-                              '$review reviews',
+                              '${product!.rating!.count} reviews',
                               style: AppFonts.reg(
                                 color: AppColors.darkGrey,
                                 size: 12,
@@ -120,9 +117,7 @@ class ProductCard extends StatelessWidget {
             color: Colors.transparent,
             borderRadius: BorderRadius.circular(AppSize.responsive(8)),
             child: InkWell(
-              onTap: () {
-                print("OKE");
-              },
+              onTap: onTap,
               borderRadius: BorderRadius.circular(AppSize.responsive(8)),
               splashColor: AppColors.lightGrey.withOpacity(0.32),
               highlightColor: AppColors.lightGrey.withOpacity(0.32),

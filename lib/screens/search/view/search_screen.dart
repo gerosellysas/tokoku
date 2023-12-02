@@ -59,31 +59,31 @@ class SearchScreen extends StatelessWidget {
           SizedBox(height: AppSize.responsive(12)),
           BlocBuilder<SearchProductBloc, SearchProductState>(
             builder: (context, state) {
-              return ProductList(
-                itemCount: state.products.length,
-                itemBuilder: (context, i) => state.status.isInProgress
-                    ? const Expanded(
-                        child: Center(
-                          child: CircularProgressIndicator(),
-                        ),
-                      )
-                    : state.status.isSuccess
-                        ? ProductCard(
+              return state.status.isInProgress
+                  ? const Expanded(
+                      child: Center(
+                        child: CircularProgressIndicator(),
+                      ),
+                    )
+                  : state.status.isSuccess
+                      ? ProductList(
+                          itemCount: state.products.length,
+                          itemBuilder: (context, i) => ProductCard(
                             product: state.products[i],
                             onTap: () => context.push('/detail',
                                 extra: state.products[i].id! - 1),
-                          )
-                        : state.status.isFailure
-                            ? Expanded(
-                                child: Center(
-                                  child: Text(
-                                    'No product found',
-                                    style: AppFonts.italic(AppColors.darkGrey),
-                                  ),
+                          ),
+                        )
+                      : state.status.isFailure
+                          ? Expanded(
+                              child: Center(
+                                child: Text(
+                                  'No product found',
+                                  style: AppFonts.italic(AppColors.darkGrey),
                                 ),
-                              )
-                            : const SizedBox(),
-              );
+                              ),
+                            )
+                          : const SizedBox();
             },
           ),
         ],

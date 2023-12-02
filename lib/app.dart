@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shop_repo/shop_repo.dart';
 import 'package:tokoku/bloc/catalog/catalog.bloc.dart';
 import 'package:tokoku/bloc/search_product/search_product.bloc.dart';
+import 'package:tokoku/bloc/transaction/transaction.bloc.dart';
 import 'package:tokoku/cubit/detail_cubit/detail_cubit.dart';
 import 'package:tokoku/cubit/detail_cubit/detail_state.dart';
 import 'package:tokoku/navigation/app_route.dart';
@@ -44,10 +45,14 @@ class _AppState extends State<App> {
           BlocProvider(create: (_) => AuthBloc(authRepo: _authRepo)),
           BlocProvider(
             create: (_) =>
-                CatalogBloc(shopRepo: _shopRepo)..add(CatalogStarted()),
+                CatalogBloc(shopRepo: _shopRepo)..add(const CatalogStarted('')),
           ),
           BlocProvider(create: (_) => DetailCubit(DetailCubitState())),
           BlocProvider(create: (_) => SearchProductBloc(shopRepo: _shopRepo)),
+          BlocProvider(
+            create: (_) =>
+                TransactionBloc(shopRepo: _shopRepo)..add(TransactionStarted()),
+          ),
         ],
         child: const AppView(),
       ),

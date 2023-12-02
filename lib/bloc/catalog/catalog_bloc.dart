@@ -19,7 +19,57 @@ class CatalogBloc extends Bloc<CatalogEvent, CatalogState> {
     emit(CatalogLoading());
     try {
       final catalog = await shopRepo.loadProduct();
-      emit(CatalogLoaded(catalog));
+      final categories = <String>[];
+      for (var cat in catalog) {
+        var valid =
+            categories.any((category) => category.contains(cat.category!));
+        if (!valid) {
+          categories.add(cat.category!);
+        }
+      }
+
+      switch (event.categoryName) {
+        case '' || null || 'All':
+          emit(CatalogLoaded(catalog, categories));
+          break;
+        case 'men\'s clothing':
+          var temCatalog = <Product>[];
+          for (var res in catalog) {
+            if (res.category == event.categoryName) {
+              temCatalog.add(res);
+            }
+          }
+          emit(CatalogLoaded(temCatalog, categories));
+          break;
+        case 'jewelery':
+          var temCatalog = <Product>[];
+          for (var res in catalog) {
+            if (res.category == event.categoryName) {
+              temCatalog.add(res);
+            }
+          }
+          emit(CatalogLoaded(temCatalog, categories));
+          break;
+        case 'electronics':
+          var temCatalog = <Product>[];
+          for (var res in catalog) {
+            if (res.category == event.categoryName) {
+              temCatalog.add(res);
+            }
+          }
+          emit(CatalogLoaded(temCatalog, categories));
+          break;
+        case 'women\'s clothing':
+          var temCatalog = <Product>[];
+          for (var res in catalog) {
+            if (res.category == event.categoryName) {
+              temCatalog.add(res);
+            }
+          }
+          emit(CatalogLoaded(temCatalog, categories));
+          break;
+        default:
+      }
     } catch (_) {
       emit(CatalogError());
     }

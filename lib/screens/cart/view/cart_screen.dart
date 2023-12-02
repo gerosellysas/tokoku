@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:tokoku/bloc/transaction/transaction.bloc.dart';
 import 'package:tokoku/res/resources.dart';
 import 'package:tokoku/screens/cart/view/cart_button.dart';
 import 'package:tokoku/screens/cart/view/cart_card.dart';
@@ -43,10 +45,14 @@ class CartScreen extends StatelessWidget {
       body: Stack(
         alignment: Alignment.bottomCenter,
         children: [
-          CartList(
-            itemCount: 20,
-            itemBuilder: (context, i) {
-              return const CartCard();
+          BlocBuilder<TransactionBloc, TransactionState>(
+            builder: (context, state) {
+              return CartList(
+                itemCount: 20,
+                itemBuilder: (context, i) {
+                  return const CartCard();
+                },
+              );
             },
           ),
           const CartButton(),

@@ -70,7 +70,8 @@ class LoginScreen extends StatelessWidget {
                           .read<LoginBloc>()
                           .add(LoginPasswordChanged(password)),
                       onFieldSubmitted: (str) {
-                        // _loginSubmitted(context);
+                        timeDilation = 1.0;
+                        context.read<LoginBloc>().add(const LoginSubmitted());
                       },
                       isError:
                           state.password.displayError != null ? true : false,

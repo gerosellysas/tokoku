@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:shop_repo/shop_repo.dart';
 import 'package:tokoku/res/resources.dart';
 
 class CartCard extends StatelessWidget {
-  const CartCard({super.key});
+  final Cart? transactions;
+
+  const CartCard({super.key, this.transactions});
 
   @override
   Widget build(BuildContext context) {

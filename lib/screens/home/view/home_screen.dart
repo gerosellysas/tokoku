@@ -32,11 +32,11 @@ class HomeScreen extends StatelessWidget {
         actions: [
           AppIconButton(
             icon: AppImages.cart,
-            onPressed: () {},
+            onPressed: () => context.push('/cart'),
           ),
           AppIconButton(
             icon: AppImages.profile,
-            onPressed: () {},
+            onPressed: () => (),
           ),
         ],
       ),
@@ -48,9 +48,33 @@ class HomeScreen extends StatelessWidget {
             child: HomeSearch(onTap: () => context.push('/search')),
           ),
           SizedBox(height: AppSize.responsive(24)),
-          HomeFilterCategory(
-            // category: ,
-            onTap: () {},
+          BlocBuilder<CatalogBloc, CatalogState>(
+            builder: (context, state) {
+              return switch (state) {
+                CatalogLoading() => const SizedBox(),
+                CatalogLoaded() => HomeCategoryButtons(
+                    itemCount: state.categories.length + 1,
+                    itemBuilder: (contex, i) {
+                      if (i == 0) {
+                        return HomeFilterCategory(
+                          onTap: () {},
+                        );
+                      }
+                      i -= 1;
+                      return HomeFilterCategory(
+                        category: state.categories[i],
+                        onTap: () {
+                          context.read<CatalogBloc>().add(CatalogStarted(
+                                state.categories[i],
+                              ));
+                          print(state.categories[i]);
+                        },
+                      );
+                    },
+                  ),
+                CatalogError() => const SizedBox(),
+              };
+            },
           ),
           SizedBox(height: AppSize.responsive(24)),
           BlocBuilder<CatalogBloc, CatalogState>(

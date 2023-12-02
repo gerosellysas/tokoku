@@ -5,6 +5,6 @@ class DetailCubit extends Cubit<DetailCubitState> {
   DetailCubit(super.initialState);
 
   void onFavoriteTapped() {
-    emit(state.copyWith(favorite: !state.favorite));
+    emit(state.copyWith(favorite: state.favorite));
   }
 }

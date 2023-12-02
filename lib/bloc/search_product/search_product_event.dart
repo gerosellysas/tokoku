@@ -19,8 +19,3 @@ final class SearchKeywordChanged extends SearchProductEvent {
 final class SearchProductSubmitted extends SearchProductEvent {
   const SearchProductSubmitted();
 }
-
-final class SearchProductStarted extends SearchProductEvent {
-  @override
-  List<Object> get props => [];
-}

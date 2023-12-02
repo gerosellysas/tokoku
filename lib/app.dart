@@ -7,6 +7,8 @@ import 'package:tokoku/bloc/search_product/search_product.bloc.dart';
 import 'package:tokoku/bloc/transaction/transaction.bloc.dart';
 import 'package:tokoku/cubit/detail_cubit/detail_cubit.dart';
 import 'package:tokoku/cubit/detail_cubit/detail_state.dart';
+import 'package:tokoku/cubit/obscure_pwd_cubit/obscure_pwd_cubit.dart';
+import 'package:tokoku/cubit/obscure_pwd_cubit/obscure_pwd_state.dart';
 import 'package:tokoku/navigation/app_route.dart';
 import 'package:tokoku/res/themes/themes.dart';
 
@@ -43,6 +45,7 @@ class _AppState extends State<App> {
       child: MultiBlocProvider(
         providers: [
           BlocProvider(create: (_) => AuthBloc(authRepo: _authRepo)),
+          BlocProvider(create: (_) => ObscurePwdCubit(ObscurePwdCubitState())),
           BlocProvider(
             create: (_) =>
                 CatalogBloc(shopRepo: _shopRepo)..add(const CatalogStarted('')),

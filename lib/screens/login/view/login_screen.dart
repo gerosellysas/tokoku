@@ -5,6 +5,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:formz/formz.dart';
 import 'package:tokoku/bloc/login/login.bloc.dart';
+import 'package:tokoku/cubit/obscure_pwd_cubit/obscure_pwd_cubit.dart';
+import 'package:tokoku/cubit/obscure_pwd_cubit/obscure_pwd_state.dart';
 import 'package:tokoku/res/resources.dart';
 
 class LoginScreen extends StatelessWidget {
@@ -60,26 +62,33 @@ class LoginScreen extends StatelessWidget {
                   buildWhen: (previous, current) =>
                       previous.password != current.password,
                   builder: (context, state) {
-                    return AppTextField(
-                      // obscure: state.obscure,
-                      keyboard: TextInputType.visiblePassword,
-                      inputAction: TextInputAction.done,
-                      label: "Password",
-                      hint: "password required",
-                      onChanged: (password) => context
-                          .read<LoginBloc>()
-                          .add(LoginPasswordChanged(password)),
-                      onFieldSubmitted: (str) {
-                        timeDilation = 1.0;
-                        context.read<LoginBloc>().add(const LoginSubmitted());
-                      },
-                      isError:
-                          state.password.displayError != null ? true : false,
-                      errorText: state.password.displayError != null
-                          ? 'invalid password'
-                          : null,
-                      onShowPassTap: () {
-                        // context.read<LoginBloc>().add(LoginShowPass(!state.obscure));
+                    return BlocBuilder<ObscurePwdCubit, ObscurePwdCubitState>(
+                      builder: (context, cubit) {
+                        return AppTextField(
+                          obscure: cubit.obscure,
+                          keyboard: TextInputType.visiblePassword,
+                          inputAction: TextInputAction.done,
+                          label: "Password",
+                          hint: "password required",
+                          onChanged: (password) => context
+                              .read<LoginBloc>()
+                              .add(LoginPasswordChanged(password)),
+                          onFieldSubmitted: (str) {
+                            timeDilation = 1.0;
+                            context
+                                .read<LoginBloc>()
+                                .add(const LoginSubmitted());
+                          },
+                          isError: state.password.displayError != null
+                              ? true
+                              : false,
+                          errorText: state.password.displayError != null
+                              ? 'invalid password'
+                              : null,
+                          onShowPassTap: () {
+                            context.read<ObscurePwdCubit>().onObscureTapped();
+                          },
+                        );
                       },
                     );
                   },

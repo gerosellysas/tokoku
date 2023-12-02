@@ -13,11 +13,19 @@ class SearchProductBloc extends Bloc<SearchProductEvent, SearchProductState> {
   SearchProductBloc({required ShopRepo shopRepo})
       : _shopRepo = shopRepo,
         super(const SearchProductState()) {
+    on<SearchProductInit>(_onInit);
     on<SearchKeywordChanged>(_onSearchKeywordChanged);
     on<SearchProductSubmitted>(_onSubmitted);
   }
 
-  void _onInit() {}
+  void _onInit(
+    SearchProductInit event,
+    Emitter<SearchProductState> emit,
+  ) {
+    emit(
+      state.copyWith(status: FormzSubmissionStatus.initial),
+    );
+  }
 
   void _onSearchKeywordChanged(
     SearchKeywordChanged event,
@@ -38,22 +46,16 @@ class SearchProductBloc extends Bloc<SearchProductEvent, SearchProductState> {
     SearchProductSubmitted event,
     Emitter<SearchProductState> emit,
   ) async {
-    print('0 =====> ${state.status}');
     emit(state.copyWith(status: FormzSubmissionStatus.initial));
-    print('00 =====> ${state.status}');
     if (state.isValid) {
       emit(state.copyWith(status: FormzSubmissionStatus.inProgress));
       try {
         List<Product> products =
             (await _shopRepo.findProduct(state.keyword.value));
-
         if (products.isEmpty) {
-          print('11 =====> $products');
           emit(state.copyWith(status: FormzSubmissionStatus.failure));
-          print('11 =====> ${state.status}');
           return;
         }
-        print('2=====> $products');
         emit(state.copyWith(
             status: FormzSubmissionStatus.success, products: products));
       } catch (_) {

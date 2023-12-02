@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:tokoku/bloc/catalog/catalog.bloc.dart';
+import 'package:tokoku/bloc/search_product/search_product.bloc.dart';
 import 'package:tokoku/res/resources.dart';
 import 'package:tokoku/screens/home/view/home_filter_category.dart';
 import 'package:tokoku/screens/home/view/home_search.dart';
@@ -57,7 +58,11 @@ class HomeScreen extends StatelessWidget {
                     itemBuilder: (contex, i) {
                       if (i == 0) {
                         return HomeFilterCategory(
-                          onTap: () {},
+                          onTap: () {
+                            context
+                                .read<CatalogBloc>()
+                                .add(const CatalogStarted(''));
+                          },
                         );
                       }
                       i -= 1;
@@ -67,7 +72,6 @@ class HomeScreen extends StatelessWidget {
                           context.read<CatalogBloc>().add(CatalogStarted(
                                 state.categories[i],
                               ));
-                          print(state.categories[i]);
                         },
                       );
                     },

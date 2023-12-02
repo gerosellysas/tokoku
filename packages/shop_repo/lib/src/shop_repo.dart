@@ -1,11 +1,11 @@
-import 'package:fake_store_api/fake_store_api.dart' as c;
+import 'package:fake_store_api/fake_store_api.dart' as client;
 import 'package:shop_repo/shop_repo.dart';
 
 class ShopRepo {
-  final c.FakeStoreApiClient _shopApiClient;
+  final client.FakeStoreApiClient _shopApiClient;
 
-  ShopRepo({c.FakeStoreApiClient? shopApiClient})
-      : _shopApiClient = shopApiClient ?? c.FakeStoreApiClient();
+  ShopRepo({client.FakeStoreApiClient? shopApiClient})
+      : _shopApiClient = shopApiClient ?? client.FakeStoreApiClient();
 
   Future<List<Product>> loadProduct() async {
     final products = await _shopApiClient.fetchProduct();
@@ -32,7 +32,7 @@ class ShopRepo {
   Future<List<Product>> findProduct(String keyword) async {
     var products = await _shopApiClient.fetchProduct();
     var result = <Product>[];
-    var temp = <c.Product>[];
+    var temp = <client.Product>[];
     await Future.forEach(products, (p) async {
       if (p.title!.toLowerCase().contains(keyword.toLowerCase())) {
         temp.add(p);
@@ -52,6 +52,28 @@ class ShopRepo {
             rate: tempP.rating?.rate,
             count: tempP.rating?.count,
           ),
+        ),
+      );
+    }
+    return result;
+  }
+
+  Future<List<Cart>> loadCart() async {
+    final carts = await _shopApiClient.fetchCart();
+    var result = <Cart>[];
+    var cartP = <CartProducts>[];
+    await Future.forEach(carts, (cart) {
+      for (var cp in cart.products!) {
+        cartP.add(CartProducts(productId: cp.productId, quantity: cp.quantity));
+      }
+    });
+    for (var c in carts) {
+      result.add(
+        Cart(
+          id: c.id,
+          userId: c.userId,
+          date: c.date,
+          products: cartP,
         ),
       );
     }

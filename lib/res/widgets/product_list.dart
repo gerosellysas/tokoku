@@ -4,13 +4,11 @@ import 'package:tokoku/res/resources.dart';
 class ProductList extends StatelessWidget {
   final int? itemCount;
   final Widget? Function(BuildContext, int)? itemBuilder;
-  final String? emptyList;
 
   const ProductList({
     super.key,
     this.itemCount,
     this.itemBuilder,
-    this.emptyList,
   });
 
   @override
@@ -23,24 +21,17 @@ class ProductList extends StatelessWidget {
           right: AppSize.responsive(12),
         ),
         color: AppColors.lightGrey,
-        child: itemCount == null || itemCount == 0
-            ? Center(
-                child: Text(
-                  emptyList!,
-                  style: AppFonts.italic(AppColors.darkGrey),
-                ),
-              )
-            : GridView.builder(
-                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 2,
-                  childAspectRatio: 1,
-                  mainAxisExtent: AppSize.responsive(360),
-                  crossAxisSpacing: AppSize.responsive(12),
-                  mainAxisSpacing: AppSize.responsive(12),
-                ),
-                itemCount: itemCount!,
-                itemBuilder: itemBuilder!,
-              ),
+        child: GridView.builder(
+          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: 2,
+            childAspectRatio: 1,
+            mainAxisExtent: AppSize.responsive(360),
+            crossAxisSpacing: AppSize.responsive(12),
+            mainAxisSpacing: AppSize.responsive(12),
+          ),
+          itemCount: itemCount!,
+          itemBuilder: itemBuilder!,
+        ),
       ),
     );
   }

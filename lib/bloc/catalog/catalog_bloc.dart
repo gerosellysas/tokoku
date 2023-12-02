@@ -6,11 +6,11 @@ part 'catalog_event.dart';
 part 'catalog_state.dart';
 
 class CatalogBloc extends Bloc<CatalogEvent, CatalogState> {
+  final ShopRepo shopRepo;
+
   CatalogBloc({required this.shopRepo}) : super(CatalogLoading()) {
     on<CatalogStarted>(_onStarted);
   }
-
-  final ShopRepo shopRepo;
 
   Future<void> _onStarted(
     CatalogStarted event,

@@ -8,16 +8,15 @@ part 'login_event.dart';
 part 'login_state.dart';
 
 class LoginBloc extends Bloc<LoginEvent, LoginState> {
-  LoginBloc({
-    required AuthRepo authRepo,
-  })  : _authRepo = authRepo,
+  final AuthRepo _authRepo;
+
+  LoginBloc({required AuthRepo authRepo})
+      : _authRepo = authRepo,
         super(const LoginState()) {
     on<LoginUsernameChanged>(_onUsernameChanged);
     on<LoginPasswordChanged>(_onPasswordChanged);
     on<LoginSubmitted>(_onSubmitted);
   }
-
-  final AuthRepo _authRepo;
 
   void _onUsernameChanged(
     LoginUsernameChanged event,
@@ -52,11 +51,10 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
     if (state.isValid) {
       emit(state.copyWith(status: FormzSubmissionStatus.inProgress));
       try {
-        var user = await _authRepo.login(
+        await _authRepo.login(
           state.username.value,
           state.password.value,
         );
-        print('=====> LOGIN:: User : $user');
         emit(state.copyWith(status: FormzSubmissionStatus.success));
       } catch (_) {
         emit(state.copyWith(status: FormzSubmissionStatus.failure));

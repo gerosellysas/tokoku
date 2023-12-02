@@ -1,16 +1,13 @@
 import 'package:auth_repo/auth_repo.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:go_router/go_router.dart';
 import 'package:shop_repo/shop_repo.dart';
 import 'package:tokoku/bloc/catalog/catalog.bloc.dart';
+import 'package:tokoku/bloc/search_product/search_product.bloc.dart';
 import 'package:tokoku/cubit/detail_cubit/detail_cubit.dart';
 import 'package:tokoku/cubit/detail_cubit/detail_state.dart';
 import 'package:tokoku/navigation/app_route.dart';
 import 'package:tokoku/res/themes/themes.dart';
-import 'package:tokoku/screens/home/home.dart';
-import 'package:tokoku/screens/login/login.dart';
-import 'package:tokoku/screens/splash/splash.dart';
 
 import 'bloc/auth/auth.bloc.dart';
 
@@ -46,11 +43,11 @@ class _AppState extends State<App> {
         providers: [
           BlocProvider(create: (_) => AuthBloc(authRepo: _authRepo)),
           BlocProvider(
-            create: (_) => CatalogBloc(
-              shopRepo: _shopRepo,
-            )..add(CatalogStarted()),
+            create: (_) =>
+                CatalogBloc(shopRepo: _shopRepo)..add(CatalogStarted()),
           ),
-          BlocProvider(create: (_) => DetailCubit(DetailCubitState()))
+          BlocProvider(create: (_) => DetailCubit(DetailCubitState())),
+          BlocProvider(create: (_) => SearchProductBloc(shopRepo: _shopRepo)),
         ],
         child: const AppView(),
       ),

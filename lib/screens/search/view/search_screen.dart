@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:formz/formz.dart';
+import 'package:go_router/go_router.dart';
+import 'package:tokoku/bloc/search_product/search_product.bloc.dart';
 import 'package:tokoku/res/resources.dart';
 
 class SearchScreen extends StatelessWidget {
@@ -24,37 +28,63 @@ class SearchScreen extends StatelessWidget {
         titleSpacing: 0.0,
         title: Hero(
           tag: 'searchField',
-          child: AppTextField(
-            height: AppSize.responsive(40),
-            width: AppSize.responsive(328),
-            radius: AppSize.responsive(24),
-            autoFocus: true,
-            inputAction: TextInputAction.search,
-            prefixIcon: AppImages.search,
-            hint: "Search on Tokoku",
-            // onChanged: (username) => context
-            //     .read<LoginBloc>()
-            //     .add(LoginUsernameChanged(username)),
-            onFieldSubmitted: (str) {
-              // _loginSubmitted(context);
+          child: BlocBuilder<SearchProductBloc, SearchProductState>(
+            buildWhen: (previous, current) =>
+                previous.keyword != current.keyword,
+            builder: (context, state) {
+              return AppTextField(
+                height: AppSize.responsive(40),
+                width: AppSize.responsive(328),
+                radius: AppSize.responsive(24),
+                autoFocus: true,
+                inputAction: TextInputAction.search,
+                prefixIcon: AppImages.search,
+                hint: "Search on Tokoku",
+                onChanged: (keyword) => context
+                    .read<SearchProductBloc>()
+                    .add(SearchKeywordChanged(keyword)),
+                onFieldSubmitted: (str) {
+                  context
+                      .read<SearchProductBloc>()
+                      .add(const SearchProductSubmitted());
+                },
+                isError: false,
+              );
             },
-            isError: false,
           ),
         ),
       ),
       body: Column(
         children: [
           SizedBox(height: AppSize.responsive(12)),
-          ProductList(
-            itemCount: 0,
-            emptyList: 'Product not found',
-            itemBuilder: (context, i) => const ProductCard(
-// image: [i],
-// name: [i],
-// price: [i],
-// rating: [i],
-// review: [i],
-                ),
+          BlocBuilder<SearchProductBloc, SearchProductState>(
+            builder: (context, state) {
+              return ProductList(
+                itemCount: state.products.length,
+                itemBuilder: (context, i) => state.status.isInProgress
+                    ? const Expanded(
+                        child: Center(
+                          child: CircularProgressIndicator(),
+                        ),
+                      )
+                    : state.status.isSuccess
+                        ? ProductCard(
+                            product: state.products[i],
+                            onTap: () => context.push('/detail',
+                                extra: state.products[i].id! - 1),
+                          )
+                        : state.status.isFailure
+                            ? Expanded(
+                                child: Center(
+                                  child: Text(
+                                    'No product found',
+                                    style: AppFonts.italic(AppColors.darkGrey),
+                                  ),
+                                ),
+                              )
+                            : const SizedBox(),
+              );
+            },
           ),
         ],
       ),

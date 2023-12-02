@@ -6,7 +6,6 @@ import 'package:tokoku/bloc/catalog/catalog.bloc.dart';
 import 'package:tokoku/res/resources.dart';
 import 'package:tokoku/screens/home/view/home_filter_category.dart';
 import 'package:tokoku/screens/home/view/home_search.dart';
-import 'package:tokoku/screens/search/search.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -46,14 +45,7 @@ class HomeScreen extends StatelessWidget {
         children: [
           Hero(
             tag: 'searchField',
-            child: HomeSearch(
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => const SearchScreen()),
-                );
-              },
-            ),
+            child: HomeSearch(onTap: () => context.push('/search')),
           ),
           SizedBox(height: AppSize.responsive(24)),
           HomeFilterCategory(
@@ -79,10 +71,10 @@ class HomeScreen extends StatelessWidget {
                   ),
                 CatalogLoaded() => ProductList(
                     itemCount: state.catalog.length,
-                    emptyList: 'Errror while loading products',
                     itemBuilder: (context, i) => ProductCard(
                       product: state.catalog[i],
-                      onTap: () => context.push('/detail', extra: i),
+                      onTap: () => context.push('/detail',
+                          extra: state.catalog[i].id! - 1),
                     ),
                   ),
               };

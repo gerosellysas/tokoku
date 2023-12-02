@@ -10,9 +10,9 @@ sealed class CatalogState extends Equatable {
 final class CatalogLoading extends CatalogState {}
 
 final class CatalogLoaded extends CatalogState {
-  const CatalogLoaded(this.catalog);
-
   final List<Product> catalog;
+
+  const CatalogLoaded(this.catalog);
 
   @override
   List<Object> get props => [catalog];

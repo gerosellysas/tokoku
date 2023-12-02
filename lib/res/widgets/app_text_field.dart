@@ -95,6 +95,7 @@ class AppTextField extends StatelessWidget {
                   onTap: onTap,
                   onChanged: onChanged,
                   // onFieldSubmitted: onFieldSubmitted,
+                  onSubmitted: onFieldSubmitted,
                 ),
                 prefixIcon != null
                     ? SizedBox(

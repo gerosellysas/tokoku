@@ -42,6 +42,32 @@ class FakeStoreApiClient {
     }
   }
 
+  // Future<List<Product>> fetchSingleProduct(String keyword) async {
+  //   final products = await fetchProduct();
+  //   var temp = <Product>[];
+  //   await Future.forEach(products, (p) async {
+  //     if (p.title!.toLowerCase().contains(keyword.toLowerCase())) {
+  //       temp.add(p);
+  //     }
+  //   });
+
+
+
+  //   var validate = products
+  //       .any((p) => p.title!.toLowerCase().contains(keyword.toLowerCase()));
+
+  //   if (!validate) return [];
+
+  //   var id = products[index].id;
+  //   try {
+  //     Response response = await _dio.get('$_baseUrl/products/$id');
+  //     if (response.statusCode != 200) return null;
+  //     return (response.data).map((p) => Product.fromJson(p));
+  //   } catch (_) {
+  //     return null;
+  //   }
+  // }
+
   Future<List<Cart>> fetchCart() async {
     try {
       Response response = await _dio.get('$_baseUrl/carts');

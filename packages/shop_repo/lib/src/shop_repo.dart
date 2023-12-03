@@ -31,52 +31,52 @@ class ShopRepo {
 
   Future<List<Product>> findProduct(String keyword) async {
     var products = await _shopApiClient.fetchProduct();
-    var result = <Product>[];
-    var temp = <client.Product>[];
+    var results = <Product>[];
+    var temps = <client.Product>[];
     await Future.forEach(products, (p) async {
       if (p.title!.toLowerCase().contains(keyword.toLowerCase())) {
-        temp.add(p);
+        temps.add(p);
       }
     });
-
-    for (var tempP in temp) {
-      result.add(
+    for (var temp in temps) {
+      results.add(
         Product(
-          id: tempP.id,
-          image: tempP.image,
-          title: tempP.title,
-          price: tempP.price,
-          description: tempP.description,
-          category: tempP.category,
+          id: temp.id,
+          image: temp.image,
+          title: temp.title,
+          price: temp.price,
+          description: temp.description,
+          category: temp.category,
           rating: Rating(
-            rate: tempP.rating?.rate,
-            count: tempP.rating?.count,
+            rate: temp.rating?.rate,
+            count: temp.rating?.count,
           ),
         ),
       );
     }
-    return result;
+    return results;
   }
 
   Future<List<Cart>> loadCart() async {
     final carts = await _shopApiClient.fetchCart();
-    var result = <Cart>[];
-    var cartP = <CartProducts>[];
-    await Future.forEach(carts, (cart) {
-      for (var cp in cart.products!) {
-        cartP.add(CartProducts(productId: cp.productId, quantity: cp.quantity));
+    var results = <Cart>[];
+    var cartProducts = <CartProducts>[];
+    await Future.forEach(carts, (c) {
+      for (var cp in c.products!) {
+        cartProducts
+            .add(CartProducts(productId: cp.productId, quantity: cp.quantity));
       }
     });
     for (var c in carts) {
-      result.add(
+      results.add(
         Cart(
           id: c.id,
           userId: c.userId,
           date: c.date,
-          products: cartP,
+          products: cartProducts,
         ),
       );
     }
-    return result;
+    return results;
   }
 }

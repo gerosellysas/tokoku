@@ -8,16 +8,14 @@ class Cart {
   final int? userId;
   final DateTime? date;
   final List<CartProducts>? products;
-  final int? v;
 
   factory Cart.fromJson(Map<String, dynamic> json) => _$CartFromJson(json);
 
   Cart({
-    required this.id,
-    required this.userId,
-    required this.date,
-    required this.products,
-    required this.v,
+    this.id,
+    this.userId,
+    this.date,
+    this.products,
   });
 }
 
@@ -30,7 +28,7 @@ class CartProducts {
       _$CartProductsFromJson(json);
 
   CartProducts({
-    required this.productId,
-    required this.quantity,
+    this.productId,
+    this.quantity,
   });
 }

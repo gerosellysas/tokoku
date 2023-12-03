@@ -16,13 +16,13 @@ class Product {
       _$ProductFromJson(json);
 
   Product({
-    required this.id,
-    required this.title,
-    required this.price,
-    required this.description,
-    required this.category,
-    required this.image,
-    required this.rating,
+    this.id,
+    this.title,
+    this.price,
+    this.description,
+    this.category,
+    this.image,
+    this.rating,
   });
 }
 
@@ -34,7 +34,7 @@ class Rating {
   factory Rating.fromJson(Map<String, dynamic> json) => _$RatingFromJson(json);
 
   Rating({
-    required this.rate,
-    required this.count,
+    this.rate,
+    this.count,
   });
 }

@@ -5,77 +5,99 @@ import 'package:mockito/mockito.dart';
 import 'package:test/test.dart';
 
 import 'auth_repo_test.mocks.dart';
+import 'mock_data/mock.dart';
 
 @GenerateMocks([client.FakeStoreApiClient])
 void main() {
   late MockFakeStoreApiClient mockUserApiClient;
   late AuthRepo authRepo;
-  late User mockUser;
-  late String mockToken;
 
   setUp(() {
     mockUserApiClient = MockFakeStoreApiClient();
     authRepo = AuthRepo(userApiClient: mockUserApiClient);
-    mockUser = const User(id: 1, username: 'johnd', password: 'm38rmF\$');
-    mockToken =
-        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjIsInVzZXIiOiJtb3JfMjMxNCIsImlhdCI6MTcwMTM1NjkwMn0.BVOaMTXf7lBQGdfvrCBAiCR5t8NBGIfxrtGy4oz8ZPg';
   });
 
-  group('constructor', () {
-    test('instantiates internal user api client when not injected', () {
+  group('constructor::', () {
+    test('instantiates internal AuthRepo client when not injected', () {
       expect(AuthRepo(), isNotNull);
     });
   });
 
-  group('get user', () {
-    test('call fetchUser with User return', () async {
-      var user = Future.value([
-        client.User(
-          id: mockUser.id,
-          username: mockUser.username,
-          password: mockUser.password,
-        ),
-      ]);
+  group('test login user::', () {
+    int index = 0;
+    List<client.User> clientUsers = [];
+    for (var u in mockUser) {
+      clientUsers.add(client.User.fromJson(u));
+    }
+    final usersResult = Future.value(clientUsers);
+    client.Token clientToken = client.Token.fromJson(mockToken);
+    final tokenResult = Future.value(clientToken);
 
-      var token = Future.value(mockToken);
+    final user = User.fromJson(mockUser[index]);
+    final token = Token.fromJson(mockToken);
 
-      when(mockUserApiClient.fetchUser()).thenAnswer((_) => user);
+    test('get token success', () async {
+      when(mockUserApiClient.fetchUser())
+          .thenAnswer((_) async => await usersResult);
 
-      when(mockUserApiClient.postUser(mockUser.username!, mockUser.password!))
-          .thenAnswer((_) => token);
+      when(mockUserApiClient.login(user.username!, user.password!))
+          .thenAnswer((_) async => await tokenResult);
 
       User result = const User();
       try {
-        result = await authRepo.login(mockUser.username!, mockUser.password!);
+        result = await authRepo.login(user.username!, user.password!);
       } catch (_) {}
 
-      expect(
-          result,
-          equals(User(
-            id: mockUser.id,
-            username: mockUser.username,
-            password: mockUser.password,
-            token: mockToken,
-          )));
+      final matcher = User(
+        id: user.id,
+        username: user.username,
+        password: user.password,
+        name: Name(
+          firstname: user.name!.firstname,
+          lastname: user.name!.lastname,
+        ),
+        email: user.email,
+        phone: user.phone,
+        address: Address(
+          street: user.address!.street,
+          number: user.address!.number,
+          city: user.address!.city,
+          zipcode: user.address!.zipcode,
+          geolocation: Geolocation(
+            lat: user.address!.geolocation!.lat,
+            long: user.address!.geolocation!.long,
+          ),
+        ),
+        token: Token(token: token.token),
+      );
+
+      expect(result, equals(matcher));
     });
 
-    test('call fetchUser with null return', () async {
-      var user = Future.value([
-        client.User(
-          id: mockUser.id,
-          username: 'no name',
-          password: 'wrong password',
-        ),
-      ]);
-
-      when(mockUserApiClient.fetchUser()).thenAnswer((_) => user);
+    test('wrong username', () async {
+      when(await mockUserApiClient.fetchUser()).thenAnswer((_) => clientUsers);
 
       User result = const User();
       try {
-        result = await authRepo.login(mockUser.username!, mockUser.password!);
+        result = await authRepo.login('wrong username', user.password!);
       } catch (_) {}
 
-      expect(result, const User());
+      const matcher = User();
+
+      expect(result, equals(matcher));
+    });
+
+    test('wrong password', () async {
+      when(await mockUserApiClient.fetchUser()).thenAnswer((_) => clientUsers);
+
+      User result = const User();
+      try {
+        result = await authRepo.login(user.username!, 'wrong password');
+      } catch (_) {}
+
+      const matcher = User();
+
+      expect(result, equals(matcher));
     });
   });
 }

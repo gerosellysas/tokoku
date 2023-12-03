@@ -5,11 +5,7 @@ import 'package:mockito/mockito.dart';
 import 'package:test/test.dart';
 
 import 'fake_store_api_test.mocks.dart';
-import 'mock_cart.dart';
-import 'mock_categories.dart';
-import 'mock_product.dart';
-import 'mock_token.dart';
-import 'mock_user.dart';
+import 'mock_data/mock.dart';
 
 @GenerateMocks([Dio])
 void main() {

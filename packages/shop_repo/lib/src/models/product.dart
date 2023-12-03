@@ -17,13 +17,13 @@ class Product extends Equatable {
       _$ProductFromJson(json);
 
   const Product({
-    required this.id,
-    required this.title,
-    required this.price,
-    required this.description,
-    required this.category,
-    required this.image,
-    required this.rating,
+    this.id,
+    this.title,
+    this.price,
+    this.description,
+    this.category,
+    this.image,
+    this.rating,
   });
 
   @override
@@ -39,8 +39,8 @@ class Rating extends Equatable {
   factory Rating.fromJson(Map<String, dynamic> json) => _$RatingFromJson(json);
 
   const Rating({
-    required this.rate,
-    required this.count,
+    this.rate,
+    this.count,
   });
 
   @override

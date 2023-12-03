@@ -13,10 +13,10 @@ class Cart extends Equatable {
   factory Cart.fromJson(Map<String, dynamic> json) => _$CartFromJson(json);
 
   const Cart({
-    required this.id,
-    required this.userId,
-    required this.date,
-    required this.products,
+    this.id,
+    this.userId,
+    this.date,
+    this.products,
   });
 
   @override
@@ -32,8 +32,8 @@ class CartProducts extends Equatable {
       _$CartProductsFromJson(json);
 
   const CartProducts({
-    required this.productId,
-    required this.quantity,
+    this.productId,
+    this.quantity,
   });
 
   @override

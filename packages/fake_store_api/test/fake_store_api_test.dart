@@ -169,16 +169,15 @@ void main() {
 
     int userId = mockCart[0]['userId'] as int;
 
-    setUp(() => url = '$url/carts/user/$userId');
-
     test('fetching Carts success', () async {
+      var path = '$url/carts/user/$userId';
       final response = Future.value(Response(
         statusCode: 200,
         data: mockCart,
-        requestOptions: RequestOptions(path: url),
+        requestOptions: RequestOptions(path: path),
       ));
 
-      when(mockDio.get(url)).thenAnswer((_) async => await response);
+      when(mockDio.get(path)).thenAnswer((_) async => await response);
 
       final result = await client.fetchCartByUser(userId);
 
@@ -213,12 +212,13 @@ void main() {
     });
 
     test('fetching Carts failed', () async {
+      var path = '$url/carts/user/$userId';
       final response = Future.value(Response(
         statusCode: 403,
-        requestOptions: RequestOptions(path: url),
+        requestOptions: RequestOptions(path: path),
       ));
 
-      when(mockDio.get(url)).thenAnswer((_) async => response);
+      when(mockDio.get(path)).thenAnswer((_) async => response);
 
       final result = await client.fetchCartByUser(1);
 

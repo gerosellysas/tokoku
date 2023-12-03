@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import 'package:tokoku/bloc/catalog/catalog.bloc.dart';
 import 'package:tokoku/cubit/detail_cubit/detail_cubit.dart';
 import 'package:tokoku/cubit/detail_cubit/detail_state.dart';
@@ -26,13 +27,15 @@ class DetailScreen extends StatelessWidget {
         leading: AppIconButton(
           icon: AppImages.back,
           color: AppColors.material,
-          onPressed: () {},
+          onPressed: () {
+            context.pop();
+          },
         ),
         actions: [
           AppIconButton(
             icon: AppImages.cart,
             color: AppColors.material,
-            onPressed: () {},
+            onPressed: () => context.push('/cart'),
           ),
           AppIconButton(
             icon: AppImages.profile,

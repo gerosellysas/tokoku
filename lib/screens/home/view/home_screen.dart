@@ -3,7 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:tokoku/bloc/catalog/catalog.bloc.dart';
-import 'package:tokoku/bloc/search_product/search_product.bloc.dart';
+import 'package:tokoku/bloc/transaction/transaction.bloc.dart';
 import 'package:tokoku/res/resources.dart';
 import 'package:tokoku/screens/home/view/home_filter_category.dart';
 import 'package:tokoku/screens/home/view/home_search.dart';
@@ -31,9 +31,15 @@ class HomeScreen extends StatelessWidget {
           ),
         ),
         actions: [
-          AppIconButton(
-            icon: AppImages.cart,
-            onPressed: () => context.push('/cart'),
+          BlocBuilder<TransactionBloc, TransactionState>(
+            builder: (context, state) {
+              return AppIconButton(
+                  icon: AppImages.cart,
+                  onPressed: () {
+                    context.read<TransactionBloc>().add(TransactionStarted());
+                    context.push('/cart');
+                  });
+            },
           ),
           AppIconButton(
             icon: AppImages.profile,

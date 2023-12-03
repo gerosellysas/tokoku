@@ -21,13 +21,25 @@ class DetailProduct extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Container(
-            height: AppSize.responsive(500),
-            width: AppSize.w,
-            margin: EdgeInsets.only(top: AppSize.responsive(48)),
-            decoration: BoxDecoration(
-              image: DecorationImage(
-                image: NetworkImage(product!.image!),
+          Hero(
+            tag: 'product${product!.id}',
+            child: Container(
+              height: AppSize.responsive(500),
+              width: AppSize.w,
+              margin: EdgeInsets.only(top: AppSize.responsive(48)),
+              decoration: BoxDecoration(
+                image: DecorationImage(
+                  image: NetworkImage(product!.image!),
+                ),
+              ),
+              child: Visibility(
+                visible: product!.image == null,
+                child: Center(
+                  child: Text(
+                    'Image error',
+                    style: AppFonts.italic(AppColors.darkGrey),
+                  ),
+                ),
               ),
             ),
           ),

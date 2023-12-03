@@ -26,27 +26,30 @@ class ProductCard extends StatelessWidget {
             ),
             child: Column(
               children: [
-                Container(
-                  height: AppSize.responsive(200),
-                  margin: EdgeInsets.only(
-                    left: AppSize.responsive(12),
-                    top: AppSize.responsive(12),
-                    right: AppSize.responsive(12),
-                  ),
-                  width: double.maxFinite,
-                  decoration: product!.image != null
-                      ? BoxDecoration(
-                          image: DecorationImage(
-                            image: NetworkImage(product!.image!),
-                          ),
-                        )
-                      : null,
-                  child: Visibility(
-                    visible: product!.image == null,
-                    child: Center(
-                      child: Text(
-                        'Image error',
-                        style: AppFonts.italic(AppColors.darkGrey),
+                Hero(
+                  tag: 'product${product!.id}',
+                  child: Container(
+                    height: AppSize.responsive(200),
+                    margin: EdgeInsets.only(
+                      left: AppSize.responsive(12),
+                      top: AppSize.responsive(12),
+                      right: AppSize.responsive(12),
+                    ),
+                    width: double.maxFinite,
+                    decoration: product!.image != null
+                        ? BoxDecoration(
+                            image: DecorationImage(
+                              image: NetworkImage(product!.image!),
+                            ),
+                          )
+                        : null,
+                    child: Visibility(
+                      visible: product!.image == null,
+                      child: Center(
+                        child: Text(
+                          'Image error',
+                          style: AppFonts.italic(AppColors.darkGrey),
+                        ),
                       ),
                     ),
                   ),

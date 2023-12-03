@@ -167,16 +167,20 @@ void main() {
       expect(result, []);
     });
 
+    int userId = mockCart[0]['userId'] as int;
+
+    setUp(() => url = '$url/carts/user/$userId');
+
     test('fetching Carts success', () async {
       final response = Future.value(Response(
         statusCode: 200,
         data: mockCart,
-        requestOptions: RequestOptions(path: '$url/carts'),
+        requestOptions: RequestOptions(path: url),
       ));
 
-      when(mockDio.get('$url/carts')).thenAnswer((_) async => await response);
+      when(mockDio.get(url)).thenAnswer((_) async => await response);
 
-      final result = await client.fetchCart();
+      final result = await client.fetchCartByUser(userId);
 
       expect(result.map((c) => c.id).toList(),
           mockCart.map((c) => c['id']).toList());
@@ -211,12 +215,12 @@ void main() {
     test('fetching Carts failed', () async {
       final response = Future.value(Response(
         statusCode: 403,
-        requestOptions: RequestOptions(path: '$url/carts'),
+        requestOptions: RequestOptions(path: url),
       ));
 
-      when(mockDio.get('$url/carts')).thenAnswer((_) async => response);
+      when(mockDio.get(url)).thenAnswer((_) async => response);
 
-      final result = await client.fetchCart();
+      final result = await client.fetchCartByUser(1);
 
       expect(result, []);
     });

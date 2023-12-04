@@ -37,7 +37,7 @@ void main() {
     final token = Token.fromJson(mockToken);
 
     test('get token success', () async {
-      when(mockUserApiClient.fetchUser())
+      when(mockUserApiClient.fetchUsers())
           .thenAnswer((_) async => await usersResult);
 
       when(mockUserApiClient.login(user.username!, user.password!))
@@ -78,7 +78,7 @@ void main() {
     });
 
     test('wrong username', () async {
-      when(await mockUserApiClient.fetchUser()).thenAnswer((_) => clientUsers);
+      when(await mockUserApiClient.fetchUsers()).thenAnswer((_) => clientUsers);
 
       User result = const User();
       try {
@@ -94,7 +94,7 @@ void main() {
     });
 
     test('wrong password', () async {
-      when(await mockUserApiClient.fetchUser()).thenAnswer((_) => clientUsers);
+      when(await mockUserApiClient.fetchUsers()).thenAnswer((_) => clientUsers);
 
       User result = const User();
       try {

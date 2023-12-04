@@ -21,7 +21,7 @@ List<Product> getMockProductByCategory(int i) {
   return products;
 }
 
-const mockProductCategory = [
+const List<List<Map<String, dynamic>>> mockProductCategory = [
   [
     {
       "id": 9,

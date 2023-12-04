@@ -40,7 +40,7 @@ void main() {
 
             when(mockDio.get(url)).thenAnswer((_) async => mockResponse);
 
-            final result = await client.fetchUser();
+            final result = await client.fetchUsers();
             final matcher = [];
 
             for (var u in mockUser) {
@@ -64,7 +64,7 @@ void main() {
 
             when(mockDio.get(url)).thenAnswer((_) async => mockResponse);
 
-            final result = await client.fetchUser();
+            final result = await client.fetchUsers();
             final matcher = [];
 
             expect(result, matcher);
@@ -132,7 +132,7 @@ void main() {
 
             when(mockDio.get(url)).thenAnswer((_) async => await mockResponse);
 
-            final result = await client.fetchProduct();
+            final result = await client.fetchProducts();
             final matcher = [];
 
             for (var p in mockProduct) {
@@ -166,7 +166,7 @@ void main() {
 
             when(mockDio.get(url)).thenAnswer((_) async => mockResponse);
 
-            final result = await client.fetchProduct();
+            final result = await client.fetchProducts();
             final matcher = [];
 
             expect(result, matcher);
@@ -265,7 +265,7 @@ void main() {
 
             when(mockDio.get(url)).thenAnswer((_) async => await mockResponse);
 
-            final result = await client.fetchProductByCategory(category);
+            final result = await client.fetchProductsByCategory(category);
             final matcher = getMockProductByCategory(index);
 
             expect(result.map((p) => p.id).toList(),
@@ -295,7 +295,7 @@ void main() {
 
             when(mockDio.get(url)).thenAnswer((_) async => mockResponse);
 
-            final result = await client.fetchProductByCategory(category);
+            final result = await client.fetchProductsByCategory(category);
             final matcher = [];
 
             expect(result, matcher);
@@ -348,42 +348,70 @@ void main() {
     group('for Cart API::', () {
       group('GET', () {
         group('/carts/user/\${userId} =>', () {
-          int userId = 0;
+          int userId = 1;
           setUp(() => url = '$url/carts/user/$userId');
+          var mockData = <Map<String, dynamic>>[];
+          for (var mockC in mockCart) {
+            if (Cart.fromJson(mockC).userId == userId) {
+              mockData.add(mockC);
+            }
+          }
 
           test('fetching cart by user id $userId suceess', () async {
             mockResponse = Future.value(Response(
               statusCode: 200,
-              data: mockCart[userId],
+              data: mockData,
               requestOptions: RequestOptions(path: url),
             ));
 
             when(mockDio.get(url)).thenAnswer((_) async => await mockResponse);
 
-            final result = await client.fetchCartByUser(userId);
-            final matcher = Cart.fromJson(mockCart[userId]);
+            final result = await client.fetchCartsByUser(userId);
 
-            expect(result?.id, matcher.id);
-            expect(result?.userId, matcher.userId);
-            expect(result?.date!, matcher.date);
-            expect(result?.products?.map((cp) => cp.productId).toList(),
-                matcher.products?.map((cp) => cp.productId).toList());
-            expect(result?.products?.map((cp) => cp.quantity).toList(),
-                matcher.products?.map((cp) => cp.quantity).toList());
+            var matcher = <Cart>[];
+            for (var c in mockCart) {
+              if (Cart.fromJson(c).userId == userId) {
+                matcher.add(Cart.fromJson(c));
+              }
+            }
+
+            expect(result.map((c) => c.id).toList(),
+                matcher.map((c) => c.id).toList());
+            expect(result.map((c) => c.userId).toList(),
+                matcher.map((c) => c.userId).toList());
+            expect(result.map((c) => c.date).toList(),
+                matcher.map((c) => c.date).toList());
+            expect(
+              result
+                  .map((c) => c.products!.map((cp) => cp.productId).toList())
+                  .toList(),
+              matcher
+                  .map((c) => c.products!.map((cp) => cp.productId).toList())
+                  .toList(),
+            );
+            expect(
+              result
+                  .map((c) => c.products!.map((cp) => cp.quantity).toList())
+                  .toList(),
+              matcher
+                  .map((c) => c.products!.map((cp) => cp.quantity).toList())
+                  .toList(),
+            );
           });
 
           test('fetching cart by user id $userId failed', () async {
             mockResponse = Future.value(Response(
               statusCode: 500,
-              data: mockCart[userId],
+              data: mockData,
               requestOptions: RequestOptions(path: url),
             ));
 
             when(mockDio.get(url)).thenAnswer((_) async => mockResponse);
 
-            final result = await client.fetchCartByUser(1);
+            final result = await client.fetchCartsByUser(userId);
+            final matcher = [];
 
-            expect(result, null);
+            expect(result, matcher);
           });
         });
       });

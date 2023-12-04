@@ -1,4 +1,4 @@
-const mockCart = [
+const List<Map<String, dynamic>> mockCart = [
   {
     'id': 1,
     'userId': 1,

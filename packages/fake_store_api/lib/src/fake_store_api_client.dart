@@ -9,7 +9,7 @@ class FakeStoreApiClient {
       : _dio = dio ?? Dio(),
         _baseUrl = baseUrl ?? 'https://fakestoreapi.com';
 
-  Future<List<User>> fetchUser() async {
+  Future<List<User>> fetchUsers() async {
     try {
       Response response = await _dio.get('$_baseUrl/users');
       if (response.statusCode != 200) return [];
@@ -32,7 +32,7 @@ class FakeStoreApiClient {
     }
   }
 
-  Future<List<Product>> fetchProduct() async {
+  Future<List<Product>> fetchProducts() async {
     try {
       Response response = await _dio.get('$_baseUrl/products');
       if (response.statusCode != 200) return [];
@@ -62,7 +62,7 @@ class FakeStoreApiClient {
     }
   }
 
-  Future<List<Product>> fetchProductByCategory(String category) async {
+  Future<List<Product>> fetchProductsByCategory(String category) async {
     try {
       Response response =
           await _dio.get('$_baseUrl/products/category/$category');
@@ -73,13 +73,13 @@ class FakeStoreApiClient {
     }
   }
 
-  Future<Cart?> fetchCartByUser(int userId) async {
+  Future<List<Cart>> fetchCartsByUser(int userId) async {
     try {
       Response response = await _dio.get('$_baseUrl/carts/user/$userId');
-      if (response.statusCode != 200) return null;
-      return Cart.fromJson(response.data);
+      if (response.statusCode != 200) return [];
+      return (response.data as List).map((c) => Cart.fromJson(c)).toList();
     } catch (_) {
-      return null;
+      return [];
     }
   }
 }

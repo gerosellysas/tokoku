@@ -95,18 +95,54 @@ class ShopRepo {
     );
   }
 
-  Future<Cart> loadCartByUserId(int userId) async {
-    final cart = await _shopApiClient.fetchCartByUser(userId);
-    var cartProducts = <CartProducts>[];
-    await Future.forEach(cart!.products!, (cp) {
-      cartProducts
-          .add(CartProducts(productId: cp.productId, quantity: cp.quantity));
+  Future<List<Cart>> loadCartByUserId(int userId) async {
+    // final cart = await _shopApiClient.fetchCartByUser(userId);
+    // var cartProducts = <CartProducts>[];
+    // await Future.forEach(cart!.products!, (cp) {
+    //   cartProducts
+    //       .add(CartProducts(productId: cp.productId, quantity: cp.quantity));
+    // });
+    // return Cart(
+    //   id: cart.id,
+    //   userId: cart.userId,
+    //   date: cart.date,
+    //   products: cartProducts,
+    // );
+    final List<Cart> carts = [];
+    //
+    var result = <Cart>[];
+    var newCartProducts = <CartProducts>[];
+    await Future.forEach(carts, (c) async {
+      newCartProducts = await _calculateCartProductsQty(c.products!);
     });
-    return Cart(
-      id: cart.id,
-      userId: cart.userId,
-      date: cart.date,
-      products: cartProducts,
-    );
+    for (var c in carts) {
+      result.add(Cart(
+        id: c.id,
+        userId: c.userId,
+        date: c.date,
+        products: newCartProducts,
+      ));
+    }
+    result.sort((a, b) => a.date!.compareTo(b.date!));
+    return result;
+  }
+
+  Future<List<CartProducts>> _calculateCartProductsQty(
+      List<CartProducts> cartProducts) async {
+    var result = <CartProducts>[];
+    for (var cp in cartProducts) {
+      var index = result.indexWhere((r) => r.productId == cp.productId);
+      if (index != -1) {
+        var totalQty = result[index].quantity! + cp.quantity!;
+        result.removeWhere((r) => r.productId == cp.productId);
+        result.add(CartProducts(
+          productId: cp.productId,
+          quantity: totalQty,
+        ));
+      } else {
+        result.add(cp);
+      }
+    }
+    return result;
   }
 }

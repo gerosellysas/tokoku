@@ -32,9 +32,9 @@ class MockFakeStoreApiClient extends _i1.Mock
   }
 
   @override
-  _i3.Future<List<_i4.User>> fetchUser() => (super.noSuchMethod(
+  _i3.Future<List<_i4.User>> fetchUsers() => (super.noSuchMethod(
         Invocation.method(
-          #fetchUser,
+          #fetchUsers,
           [],
         ),
         returnValue: _i3.Future<List<_i4.User>>.value(<_i4.User>[]),
@@ -57,9 +57,9 @@ class MockFakeStoreApiClient extends _i1.Mock
       ) as _i3.Future<_i4.Token?>);
 
   @override
-  _i3.Future<List<_i4.Product>> fetchProduct() => (super.noSuchMethod(
+  _i3.Future<List<_i4.Product>> fetchProducts() => (super.noSuchMethod(
         Invocation.method(
-          #fetchProduct,
+          #fetchProducts,
           [],
         ),
         returnValue: _i3.Future<List<_i4.Product>>.value(<_i4.Product>[]),
@@ -84,21 +84,22 @@ class MockFakeStoreApiClient extends _i1.Mock
       ) as _i3.Future<List<String>>);
 
   @override
-  _i3.Future<List<_i4.Product>> fetchProductByCategory(String? category) =>
+  _i3.Future<List<_i4.Product>> fetchProductsByCategory(String? category) =>
       (super.noSuchMethod(
         Invocation.method(
-          #fetchProductByCategory,
+          #fetchProductsByCategory,
           [category],
         ),
         returnValue: _i3.Future<List<_i4.Product>>.value(<_i4.Product>[]),
       ) as _i3.Future<List<_i4.Product>>);
 
   @override
-  _i3.Future<_i4.Cart?> fetchCartByUser(int? userId) => (super.noSuchMethod(
+  _i3.Future<List<_i4.Cart>> fetchCartsByUser(int? userId) =>
+      (super.noSuchMethod(
         Invocation.method(
-          #fetchCartByUser,
+          #fetchCartsByUser,
           [userId],
         ),
-        returnValue: _i3.Future<_i4.Cart?>.value(),
-      ) as _i3.Future<_i4.Cart?>);
+        returnValue: _i3.Future<List<_i4.Cart>>.value(<_i4.Cart>[]),
+      ) as _i3.Future<List<_i4.Cart>>);
 }

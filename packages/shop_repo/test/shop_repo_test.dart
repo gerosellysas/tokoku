@@ -23,13 +23,13 @@ void main() {
     });
   });
 
-  group('test products::', () {
-    group('get product categories =>', () {
+  group('test shop repo method::', () {
+    group('get categories =>', () {
       final categoriesResult = Future.value(mockCategories);
 
-      test('categories success', () async {
+      test('loading all categories success', () async {
         when(mockShopApiClient.fetchCategories())
-            .thenAnswer((_) async => categoriesResult);
+            .thenAnswer((_) async => await categoriesResult);
 
         List<String> result = [];
         try {
@@ -45,8 +45,10 @@ void main() {
         expect(result, matcher);
       });
 
-      test('categories failed', () async {
-        when(mockShopApiClient.fetchCategories()).thenAnswer((_) async => []);
+      test('loading all categories failed on empty', () async {
+        final answer = Future.value(<String>[]);
+        when(mockShopApiClient.fetchCategories())
+            .thenAnswer((_) async => await answer);
 
         List<String> result = [];
         try {
@@ -66,8 +68,8 @@ void main() {
       }
       final productsResult = Future.value(clientProducts);
 
-      test('all products success', () async {
-        when(mockShopApiClient.fetchProduct())
+      test('loading all products success', () async {
+        when(mockShopApiClient.fetchProducts())
             .thenAnswer((_) async => await productsResult);
 
         List<Product> result = [];
@@ -84,8 +86,10 @@ void main() {
         expect(result, equals(matcher));
       });
 
-      test('all products failed', () async {
-        when(mockShopApiClient.fetchProduct()).thenAnswer((_) async => []);
+      test('loading all products failed on products empty', () async {
+        final answer = Future.value(<client.Product>[]);
+        when(mockShopApiClient.fetchProducts())
+            .thenAnswer((_) async => await answer);
 
         List<Product> result = [];
 
@@ -108,8 +112,8 @@ void main() {
       }
       final productsResult = Future.value(clientProducts);
 
-      test('products by category "${mockCategories[index]}" success', () async {
-        when(mockShopApiClient.fetchProductByCategory(category))
+      test('"${mockCategories[index]}" success', () async {
+        when(mockShopApiClient.fetchProductsByCategory(category))
             .thenAnswer((_) async => await productsResult);
 
         List<Product> result = [];
@@ -126,9 +130,10 @@ void main() {
         expect(result, equals(matcher));
       });
 
-      test('products by category "${mockCategories[index]}" failed', () async {
-        when(mockShopApiClient.fetchProductByCategory(category))
-            .thenAnswer((_) async => []);
+      test('"${mockCategories[index]}" failed on products empty', () async {
+        final answer = Future.value(<client.Product>[]);
+        when(mockShopApiClient.fetchProductsByCategory(category))
+            .thenAnswer((_) async => await answer);
 
         List<Product> result = [];
 
@@ -155,8 +160,8 @@ void main() {
       }
       final productsResult = Future.value(clientProducts);
 
-      test('finding products from keyword "$keyword" success', () async {
-        when(mockShopApiClient.fetchProduct())
+      test('from keyword "$keyword" success', () async {
+        when(mockShopApiClient.fetchProducts())
             .thenAnswer((_) async => await productsResult);
 
         List<Product> result = [];
@@ -178,8 +183,10 @@ void main() {
         expect(result, equals(matcher));
       });
 
-      test('finding products from keyword "$keyword" failed', () async {
-        when(mockShopApiClient.fetchProduct()).thenAnswer((_) async => []);
+      test('from keyword "$keyword" failed on products empty', () async {
+        final answer = Future.value(<client.Product>[]);
+        when(mockShopApiClient.fetchProducts())
+            .thenAnswer((_) async => await answer);
 
         List<Product> result = [];
 
@@ -193,7 +200,7 @@ void main() {
       });
     });
 
-    group('load cart', () {
+    group('load cart =>', () {
       int userId = 1;
       List<client.Cart> clientCarts = [];
       for (var c in mockCart) {
@@ -201,57 +208,171 @@ void main() {
           clientCarts.add(client.Cart.fromJson(c));
         }
       }
+      final cartsResult = Future.value(clientCarts);
 
-      List<client.CartProducts> clientCartProducts = [];
-      List<client.Product> clientProducts = [];
-      var listProductId = mockProduct.map((mockCP) => mockCP['id']).toList();
-      for (var c in clientCarts) {
+      List<Cart> tempCarts = [];
+      List<CartProducts> cartProducts = [];
+      List<Cart> carts = [];
+      for (var c in mockCart) {
+        if (Cart.fromJson(c).userId == userId) {
+          tempCarts.add(Cart.fromJson(c));
+        }
+      }
+      for (var c in tempCarts) {
         for (var cp in c.products!) {
-          clientCartProducts.add(cp);
-          var index = listProductId.indexWhere((i) => i == (cp.productId!));
-          clientProducts.add(client.Product.fromJson(mockProduct[index]));
+          var index = cartProducts
+              .indexWhere((newCP) => newCP.productId == cp.productId);
+          if (index != -1) {
+            var totalQty = cartProducts[index].quantity! + cp.quantity!;
+            cartProducts.removeWhere((r) => r.productId == cp.productId);
+            cartProducts.add(CartProducts(
+              productId: cp.productId,
+              quantity: totalQty,
+            ));
+          } else {
+            cartProducts.add(cp);
+          }
         }
-      }
-      List<client.Cart> clientCartsFinal = [];
-      List<client.CartProducts> clientCartProductsFinal = [];
-      for (var cp in clientCartProducts) {
-        var index = clientCartProductsFinal
-            .indexWhere((e) => e.productId == cp.productId);
-        if (index != -1) {
-          var totalQty =
-              clientCartProductsFinal[index].quantity! + cp.quantity!;
-          clientCartProductsFinal
-              .removeWhere((e) => e.productId == cp.productId);
-          clientCartProductsFinal.add(client.CartProducts(
-            productId: cp.productId,
-            quantity: totalQty,
-          ));
-        } else {
-          clientCartProductsFinal.add(cp);
-        }
-      }
-
-      for (var c in clientCarts) {
-        clientCartsFinal.add(client.Cart(
+        carts.add(Cart(
           id: c.id,
           userId: c.userId,
           date: c.date,
-          products: clientCartProductsFinal,
+          products: cartProducts,
         ));
-        clientCartsFinal.sort((a, b) => a.date!.compareTo(b.date!));
       }
+      carts.sort((a, b) => a.date!.compareTo(b.date!));
 
-      final productsResult = Future.value(clientProducts);
+      test('by user id $userId success', () async {
+        when(mockShopApiClient.fetchCartsByUser(userId))
+            .thenAnswer((_) async => await cartsResult);
 
-      test('cart by user id $userId sucess', () async {
-        for (var c in clientCartsFinal) {
+        Cart result = const Cart();
+        try {
+          result = (await shopRepo.loadCartByUserId(userId));
+        } catch (_) {}
+
+        final matcher = carts.last;
+
+        expect(result, equals(matcher));
+      });
+
+      test('by user id $userId failed on list cart empty', () async {
+        final answer = Future.value(<client.Cart>[]);
+        when(mockShopApiClient.fetchCartsByUser(userId))
+            .thenAnswer((_) async => await answer);
+
+        Cart result = const Cart();
+        try {
+          result = (await shopRepo.loadCartByUserId(userId));
+        } catch (_) {}
+
+        Cart matcher = const Cart();
+
+        expect(result, equals(matcher));
+      });
+
+      test('by user id $userId failed on list cart null', () async {
+        final answer = Future.value([client.Cart()]);
+        when(mockShopApiClient.fetchCartsByUser(userId))
+            .thenAnswer((_) async => await answer);
+
+        Cart result = const Cart();
+        try {
+          result = (await shopRepo.loadCartByUserId(userId));
+        } catch (_) {}
+
+        Cart matcher = const Cart();
+
+        expect(result, equals(matcher));
+      });
+
+      List<client.Product> clientProducts = [];
+      for (var p in mockProduct) {
+        for (var c in clientCarts) {
           for (var cp in c.products!) {
-            print(cp.productId);
-            print('//');
-            print(cp.quantity);
-            print('====');
+            if (cp.productId! == client.Product.fromJson(p).id) {
+              clientProducts.add(client.Product.fromJson(p));
+            }
           }
         }
+      }
+      List<client.Product> allClientProducts = [];
+      for (var p in mockProduct) {
+        allClientProducts.add(client.Product.fromJson(p));
+      }
+      final allProductsResult = Future.value(allClientProducts);
+
+      List<Product> allProducts = [];
+      List<Product> products = [];
+      for (var p in mockProduct) {
+        allProducts.add(Product.fromJson(p));
+      }
+      for (var c in carts) {
+        for (var cp in c.products!) {
+          var i = allProducts.indexWhere((p) => p.id == cp.productId);
+          if (i != -1) {
+            products.removeWhere((p) => p.id == cp.productId);
+            products.add(allProducts[i]);
+          } else {
+            products.add(allProducts[i]);
+          }
+        }
+      }
+
+      test('products from cart with user id $userId success', () async {
+        when(mockShopApiClient.fetchCartsByUser(userId))
+            .thenAnswer((_) async => await cartsResult);
+
+        for (var p in clientProducts) {
+          var i = allClientProducts.indexWhere((clientP) => clientP.id == p.id);
+          when(mockShopApiClient.fetchProductById(p.id))
+              .thenAnswer((_) async => (await allProductsResult)[i]);
+        }
+
+        List<Product> result = [];
+        try {
+          final cartInserter = await shopRepo.loadCartByUserId(userId);
+          result = await shopRepo.loadProductsFromCart(cart: cartInserter);
+        } catch (_) {}
+
+        final matcher = products;
+
+        expect(result, equals(matcher));
+      });
+
+      test('products from cart with user id $userId failed on cart empty',
+          () async {
+        final answer = Future.value(<client.Cart>[]);
+        when(mockShopApiClient.fetchCartsByUser(userId))
+            .thenAnswer((_) async => await answer);
+
+        List<Product> result = [];
+        try {
+          final cartInserter = await shopRepo.loadCartByUserId(userId);
+          result = await shopRepo.loadProductsFromCart(cart: cartInserter);
+        } catch (_) {}
+
+        final matcher = [];
+
+        expect(result, equals(matcher));
+      });
+
+      test('products from cart with user id $userId failed on cart null',
+          () async {
+        final answer = Future.value([client.Cart()]);
+        when(mockShopApiClient.fetchCartsByUser(userId))
+            .thenAnswer((_) async => await answer);
+
+        List<Product> result = [const Product(), const Product()];
+
+        try {
+          final cartInserter = await shopRepo.loadCartByUserId(userId);
+          result = await shopRepo.loadProductsFromCart(cart: cartInserter);
+        } catch (_) {}
+
+        final matcher = [];
+
+        expect(result, equals(matcher));
       });
     });
   });

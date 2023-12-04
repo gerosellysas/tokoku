@@ -20,8 +20,9 @@ class AuthRepo {
     yield* _controller.stream;
   }
 
-  Future<User> login(String username, String password) async {
-    final users = await _userApiClient.fetchUser();
+  Future<User> login(
+      {required String username, required String password}) async {
+    final users = await _userApiClient.fetchUsers();
     final index = users
         .indexWhere((u) => u.username == username && u.password == password);
     if (index == -1) {

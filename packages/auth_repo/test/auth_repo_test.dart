@@ -45,7 +45,10 @@ void main() {
 
       User result = const User();
       try {
-        result = await authRepo.login(user.username!, user.password!);
+        result = await authRepo.login(
+          username: user.username!,
+          password: user.password!,
+        );
       } catch (_) {}
 
       final matcher = User(
@@ -79,7 +82,10 @@ void main() {
 
       User result = const User();
       try {
-        result = await authRepo.login('wrong username', user.password!);
+        result = await authRepo.login(
+          username: 'wrong username',
+          password: user.password!,
+        );
       } catch (_) {}
 
       const matcher = User();
@@ -92,7 +98,10 @@ void main() {
 
       User result = const User();
       try {
-        result = await authRepo.login(user.username!, 'wrong password');
+        result = await authRepo.login(
+          username: user.username!,
+          password: 'wrong password',
+        );
       } catch (_) {}
 
       const matcher = User();
